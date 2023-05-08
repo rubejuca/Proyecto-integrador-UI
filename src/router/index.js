@@ -1,5 +1,12 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
+import MedicosView from '../views/MedicosView.vue'
+import PacientesView from '../views/PacientesView.vue'
+import CitasView from '../views/CitasView.vue'
+import AtencionView from '../views/AtencionView.vue'
+import MedicoInfoView from '../views/MedicoInfoView.vue'
+import PacientesInfoView from '../views/PacientesInfoView.vue'
+
 
 const routes = [
   {
@@ -8,12 +15,34 @@ const routes = [
     component: HomeView
   },
   {
-    path: '/about',
-    name: 'about',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/AboutView.vue')
+    path: '/medicos',
+    name: 'medicos',
+    component: MedicosView
+  },
+  {
+    path: '/medico',
+    name: 'medico',
+    component: MedicoInfoView
+  },
+  {
+    path: '/pacientes',
+    name: 'pacientes',
+    component: PacientesView
+  },
+  {
+    path: '/citas',
+    name: 'citas',
+    component: CitasView
+  },
+  {
+    path: '/atencion',
+    name: 'atencion',
+    component: AtencionView
+  },
+  {
+    path: '/paciente',
+    name: 'paciente',
+    component: PacientesInfoView
   }
 ]
 
