@@ -1,25 +1,40 @@
 <template>
-  <div class="container-fluid">
-    <div class="row flex-nowrap">
-      <div class="col-auto col-md-3 col-xl-2 px-sm-2 px-0 bg-dark">
-        <Menu />
-      </div>
-      <div class="col py-3">
-        <router-view />
-      </div>
-    </div>
-  </div>
-</template>
+  <template v-if="user">
+    <router-view />
+  </template>
+  <Auth v-if="!user && user !== undefined" />
+</template> 
 
 <script>
-import Menu from './components/Menu';
+
+import { onMounted, computed } from 'vue';
+import { useStore } from 'vuex';
+import { auth } from "./utils/firebase";
+import Auth from "./views/Auth.vue"
 
 export default {
+
   name: "App",
+
   components: {
-    Menu,
+    Auth
   },
+
+  setup() {
+    const store = useStore();
+    const user = computed(() => store.state.user);
+    onMounted(() => {
+      auth.onAuthStateChanged((user) => {
+        console.log("onAuthStateChanged");
+        console.log(user);
+        store.commit("setUser", user)
+      });
+    });
+    return { user };
+  },
+
 };
+
 </script>
 
 <style lang="scss"></style>

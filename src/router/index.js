@@ -3,16 +3,17 @@ import HomeView from '../views/HomeView.vue'
 import MedicosView from '../views/MedicosView.vue'
 import PacientesView from '../views/PacientesView.vue'
 import CitasView from '../views/CitasView.vue'
+import CitaInfoView from '../views/CitaInfoView.vue'
 import AtencionView from '../views/AtencionView.vue'
 import MedicoInfoView from '../views/MedicoInfoView.vue'
 import PacientesInfoView from '../views/PacientesInfoView.vue'
-
+import Login from '../components/Auth/Login.vue'
+import Menu from '../components/Menu.vue'
 
 const routes = [
   {
     path: '/',
-    name: 'home',
-    component: HomeView
+    component: MedicosView
   },
   {
     path: '/medicos',
@@ -30,11 +31,6 @@ const routes = [
     component: PacientesView
   },
   {
-    path: '/citas',
-    name: 'citas',
-    component: CitasView
-  },
-  {
     path: '/atencion',
     name: 'atencion',
     component: AtencionView
@@ -43,6 +39,28 @@ const routes = [
     path: '/paciente',
     name: 'paciente',
     component: PacientesInfoView
+  },
+  {
+    path: '/paciente/:pacienteId',
+    name: 'editar-paciente',
+    component: PacientesInfoView,
+    props: true
+  },
+  {
+    path: '/medico/:medicoId',
+    name: 'editar-medico',
+    component: MedicoInfoView,
+    props: true
+  },
+  {
+    path: '/cita',
+    name: 'cita',
+    component: CitaInfoView
+  },
+  {
+    path: '/citas',
+    name: 'citas',
+    component: CitasView
   }
 ]
 
