@@ -1,0 +1,84 @@
+<template>
+    <section class="vh-100" style="background-color: #343a40">
+        <div class="container py-5 h-100">
+            <div class="row d-flex justify-content-center align-items-center h-100">
+                <div class="col col-xl-10">
+                    <div class="card" style="border-radius: 1rem;">
+                        <div class="row g-0">
+                            <div class="col-md-6 col-lg-5 d-none d-md-block">
+                                <img src="../../assets/login.jpg" alt="login form" class="img-fluid"
+                                    style="border-radius: 1rem 0 0 1rem;" />
+                            </div>
+                            <div class="col-md-6 col-lg-7 d-flex align-items-center">
+                                <div class="card-body p-4 p-lg-5 text-black">
+                                    <form @submit.prevent="onRegister">
+                                        <div class="d-flex align-items-center mb-3 pb-1">
+                                            <i class="fas fa-cubes fa-2x me-3" style="color: #ff6219;"></i>
+                                            <span class="h1 fw-bold mb-0">Registro</span>
+                                        </div>
+                                        <div class="form-outline mb-4">
+                                            <label for="email" class="form-label">e-mail</label>
+                                            <input type="email" class="form-control" id="email"
+                                                placeholder="user@server.com" v-model="formData.email">
+                                        </div>
+                                        <div class="form-outline mb-4">
+                                            <label for="password" class="form-label">Contraseña</label>
+                                            <input id="password" name="password" type="password"
+                                                placeholder="Ingresa tu contraseña" class="form-control"
+                                                v-model="formData.password" />
+                                        </div>
+                                        <div class="form-outline mb-4">
+                                            <label for="password" class="form-label">Contraseña</label>
+                                            <input id="password" name="password" type="password"
+                                                placeholder="Repetir contraseña" class="form-control"
+                                                v-model="formData.repeatPassword" />
+                                        </div>
+                                        <div class="pt-1 mb-4">
+                                            <button class="btn btn-dark btn-lg btn-block"
+                                                type="submit">Registrar</button>&nbsp;
+                                            <button class="btn btn-dark btn-lg btn-block" @click="changeForm">Iniciar
+                                                sesión</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</template>
+
+<script>
+
+import { doRegister } from '@/utils/firebase';
+
+export default {
+
+    name: "Registrer",
+    props: {
+        changeForm: Function,
+    },
+
+    setup() {
+        let formData = {};
+        const onRegister = async () => {
+            try {
+                const { email, password } = formData;
+                const userCredential = await doRegister(email, password);
+                console.log(userCredential);
+            } catch (error) {
+                console.log(error);
+            }
+        }
+        return {
+            formData,
+            onRegister
+        };
+    }
+
+}
+</script>
+
+<style lang="scss"></style>
