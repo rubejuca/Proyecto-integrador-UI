@@ -64,7 +64,6 @@ export default {
                 const userCredential = await doLogin(email, password);
                 console.log(userCredential);
             } catch (error) {
-
                 alert(error);
             }
         }
@@ -77,10 +76,4 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
-/* .col-md-6 .col-lg-5 .d-none .d-md-block .texto .titulo p {
-    background: url(../../assets/login.jpg);
-    display: flex;
-    text-align: center;
-} */
-</style>
+<style lang="scss" scoped></style>

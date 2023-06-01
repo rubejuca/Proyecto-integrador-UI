@@ -1,5 +1,4 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
 import MedicosView from '../views/MedicosView.vue'
 import PacientesView from '../views/PacientesView.vue'
 import CitasView from '../views/CitasView.vue'
@@ -7,8 +6,8 @@ import CitaInfoView from '../views/CitaInfoView.vue'
 import AtencionView from '../views/AtencionView.vue'
 import MedicoInfoView from '../views/MedicoInfoView.vue'
 import PacientesInfoView from '../views/PacientesInfoView.vue'
-import Login from '../components/Auth/Login.vue'
-import Menu from '../components/Menu.vue'
+import UsuariosView from '../views/UsuariosView.vue'
+import UsuarioInfoView from '../views/UsuarioInfoView.vue'
 
 const routes = [
   {
@@ -61,7 +60,18 @@ const routes = [
     path: '/citas',
     name: 'citas',
     component: CitasView
+  },
+  {
+    path: '/usuarios',
+    name: 'usuarios',
+    component: UsuariosView
+  },
+  {
+    path: '/usuario',
+    name: 'usuario',
+    component: UsuarioInfoView
   }
+  
 ]
 
 const router = createRouter({
