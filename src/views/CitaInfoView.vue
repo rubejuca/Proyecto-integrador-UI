@@ -32,7 +32,7 @@
                             <textarea class="form-control" id="motivo" v-model="motivo"></textarea>
                         </div>
                         <div class="col-12">
-                            <button class="btn btn-primary" @click="create" to="/citas">Guardar</button>&nbsp;
+                            <button class="btn btn-primary" @click="guardar" to="/citas">Guardar</button>&nbsp;
                             <router-link class="btn btn-secondary" to="/citas">Cancelar</router-link>
                         </div>
                     </form>
@@ -53,8 +53,13 @@ export default {
         Menu
     },
 
+    props: {
+        citaId: String
+    },
+
     data() {
         return {
+            id: null,
             medicos: [],
             pacientes: [],
             medicoId: null,
@@ -63,6 +68,18 @@ export default {
             motivo: null
         }
     },
+
+    async mounted() {
+        this.leerMedicos();
+        this.leerPacientes();
+
+        if (this.$route.params.citaId != undefined) {
+            const cita = await fetch(`http://localhost:8080/api/citas/${this.$route.params.citaId}`)
+                .then(response => response.json());
+            this.actualizarData(cita);
+        }
+    },
+
 
     methods: {
         async leerMedicos() {
@@ -75,29 +92,50 @@ export default {
             this.pacientes = await pacientes.json();
         },
 
-        async create() {
-            console.log('Enviando al backend');
-            const response = await fetch("http://localhost:8080/api/citas", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    fechaHora: this.fechaHora,
-                    pacienteId: this.pacienteId,
-                    medicoId: this.medicoId,
-                    motivo: this.motivo
-                }),
-            });
-            return response.json();
+        async guardar() {
+            if (this.id == undefined) {
+                console.log('Enviando al backend');
+                const response = await fetch("http://localhost:8080/api/citas", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        fechaHora: this.fechaHora,
+                        pacienteId: this.pacienteId,
+                        medicoId: this.medicoId,
+                        motivo: this.motivo
+                    }),
+                });
+                return response.json();
+
+            } else {
+                const response = await fetch(`http://localhost:8080/api/citas/${this.id}`, {
+                    method: 'PUT',
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        fechaHora: this.fechaHora,
+                        medicoId: this.medicoId,
+                        motivo: this.motivo
+                    }),
+                });
+                this.actualizarData(await response.json());
+            }
+
+            this.$router.push("/citas");
+        },
+
+        actualizarData(datos) {
+            this.id = datos.id;
+            this.fechaHora = datos.fechaHora;
+            this.pacienteId = datos.pacienteId;
+            this.medicoId = datos.medicoId;
+            this.motivo = datos.motivo;
         }
 
     },
-
-    mounted() {
-        this.leerMedicos();
-        this.leerPacientes();
-    }
 }
 </script>
 

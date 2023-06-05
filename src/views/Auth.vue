@@ -1,8 +1,8 @@
 <template>
     <div class="auth">
-        <Login v-if="showLogin" :changeForm="changeForm" />
-        <Register v-if="!showLogin" :changeForm="changeForm" />
-
+        <Login v-if="showLogin === 'LOGIN'" :changeForm="changeForm" />
+        <Register v-if="showLogin === 'REGISTER'" :changeForm="changeForm" />
+        <Forgot v-if="showLogin === 'FORGOT'" :changeForm="changeForm" />
     </div>
 </template>
 
@@ -11,18 +11,23 @@
 import { ref } from 'vue';
 import Login from "../components/Auth/Login.vue";
 import Register from "../components/Auth/Register.vue";
+import Forgot from '@/components/Auth/Forgot.vue';
+
 
 export default {
     name: "Auth",
     components: {
         Login,
-        Register
+        Register,
+        Forgot
+
     },
     setup() {
-        let showLogin = ref(true);
+        let showLogin = ref("LOGIN");
 
-        const changeForm = () => {
-            showLogin.value = !showLogin.value;
+        const changeForm = (targetForm) => {
+            console.log(targetForm);
+            showLogin.value = targetForm;
         };
 
         return {

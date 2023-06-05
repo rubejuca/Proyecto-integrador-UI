@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { createUserWithEmailAndPassword, getAuth, signInWithEmailAndPassword, signOut } from "firebase/auth";
+import { createUserWithEmailAndPassword, getAuth, signInWithEmailAndPassword, signOut, sendPasswordResetEmail } from "firebase/auth";
 
 import "firebase/auth";
 
@@ -27,4 +27,8 @@ const doLogout = async () => {
   return signOut(auth);
 }
 
-export { firebaseApp, auth, doLogin, doRegister, doLogout };
+const doRecover = async (email) => {
+  return sendPasswordResetEmail(auth, email);
+}
+
+export { firebaseApp, auth, doLogin, doRegister, doLogout, doRecover };

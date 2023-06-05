@@ -11,10 +11,10 @@
                             </div>
                             <div class="col-md-6 col-lg-7 d-flex align-items-center">
                                 <div class="card-body p-4 p-lg-5 text-black">
-                                    <form @submit.prevent="onRegister">
+                                    <form @submit.prevent="onSubmit">
                                         <div class="d-flex align-items-center mb-3 pb-1">
                                             <i class="fas fa-cubes fa-2x me-3" style="color: #ff6219;"></i>
-                                            <span class="h1 fw-bold mb-0">Registro</span>
+                                            <span class="h1 fw-bold mb-0">Sign-in</span>
                                         </div>
                                         <div class="form-outline mb-4">
                                             <label for="email" class="form-label">e-mail</label>
@@ -35,9 +35,10 @@
                                         </div>
                                         <div class="pt-1 mb-4">
                                             <button class="btn btn-dark btn-lg btn-block"
-                                                type="submit">Registrar</button>&nbsp;
-                                            <button class="btn btn-dark btn-lg btn-block" @click="changeForm">Iniciar
-                                                sesión</button>
+                                                type="submit">Sign-in</button>&nbsp;
+                                        </div>
+                                        <div>
+                                            <a class="link-primary" @click="changeForm('LOGIN')">Login</a>
                                         </div>
                                     </form>
                                 </div>
@@ -63,7 +64,7 @@ export default {
 
     setup() {
         let formData = {};
-        const onRegister = async () => {
+        const onSubmit = async () => {
             try {
                 const { email, password } = formData;
                 const userCredential = await doRegister(email, password);
@@ -74,11 +75,15 @@ export default {
         }
         return {
             formData,
-            onRegister
+            onSubmit
         };
     }
 
 }
 </script>
 
-<style lang="scss"></style>
+<style lang="scss" scoped>
+.link-primary {
+    margin-left: 20px;
+}
+</style>

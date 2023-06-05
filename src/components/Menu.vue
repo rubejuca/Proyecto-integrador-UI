@@ -46,6 +46,15 @@
           </a>
         </li>
       </template>
+      <template v-if="permisos && permisos.includes('MENU_ATENCION')">
+        <li class="nav-item my-sm-1 my-2">
+          <a href="#" class="nav-link text-white" aria-current="page">
+            <i class="fa fa-users"></i>
+            <router-link class="nav-link text-white" to="/Atencion"><i class="bi bi-person-lines-fill"></i>
+              Atención Citas</router-link>
+          </a>
+        </li>
+      </template>
       <li class="nav-item my-sm-1 my-2">
         <a href="#" class="nav-link text-white" aria-current="page">
           <i class="fa fa-users"></i>

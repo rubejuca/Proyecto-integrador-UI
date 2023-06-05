@@ -17,7 +17,7 @@
                                 <td>{{ usuario.email }}</td>
                                 <td>{{ usuario.rol }}</td>
                                 <td>
-                                    <button class="btn btn-secondary" @click="editar(usuario.id)">Editar</button>
+                                    <a class="btn-sm btn-outline-success" @click="editar(usuario.id)">Editar</a>
                                 </td>
                             </tr>
                         </tbody>
@@ -50,10 +50,10 @@ export default {
             this.usuarios = await usuarios.json();
         },
 
-        /* async editar(usuarioId) {
+        async editar(usuarioId) {
             console.log(`Editar ${usuarioId}`)
             this.$router.push({ name: "editar-usuario", params: { usuarioId: usuarioId } })
-        } */
+        }
     },
 
     mounted() {

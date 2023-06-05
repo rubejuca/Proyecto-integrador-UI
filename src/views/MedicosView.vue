@@ -21,7 +21,7 @@
                                 <td>{{ medico.telefono }}</td>
                                 <td>{{ medico.email }}</td>
                                 <td>
-                                    <button class="btn btn-secondary" @click="editar(medico.id)">Editar</button>
+                                    <a class="btn-sm btn-outline-success" @click="editar(medico.id)">Editar</a>
                                 </td>
                             </tr>
                         </tbody>
@@ -58,11 +58,22 @@ export default {
         async editar(medicoId) {
             console.log(`Editar ${medicoId}`)
             this.$router.push({ name: "editar-medico", params: { medicoId: medicoId } })
+        },
+
+        async leerEspecialidades() {
+            const especialidades = await fetch("http://localhost:8080/api/especialidades");
+            this.especialidades = await especialidades.json();
+        },
+
+        async editarEspecialidad(especialidad) {
+            console.log(`Editar ${especialidad}`)
+            this.$router.push({ name: "editar-especialidad", params: { especialidad: especialidad } })
         }
     },
 
     mounted() {
         this.leerMedicos();
+        this.leerEspecialidades();
     }
 }
 </script>

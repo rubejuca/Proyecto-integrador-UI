@@ -19,7 +19,7 @@
                                 <td>{{ paciente.apellidos }}, {{ paciente.nombres }}</td>
                                 <td>{{ paciente.telefono }}</td>
                                 <td>
-                                    <button class="btn btn-secondary" @click="editar(paciente.id)">Editar</button>
+                                    <a class="btn-sm btn-outline-success" @click="editar(paciente.id)">Editar</a>
                                 </td>
                             </tr>
                         </tbody>

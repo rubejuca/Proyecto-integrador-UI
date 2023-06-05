@@ -4,10 +4,12 @@ import PacientesView from '../views/PacientesView.vue'
 import CitasView from '../views/CitasView.vue'
 import CitaInfoView from '../views/CitaInfoView.vue'
 import AtencionView from '../views/AtencionView.vue'
+import AtencionInfoView from '../views/AtencionInfoView.vue'
 import MedicoInfoView from '../views/MedicoInfoView.vue'
 import PacientesInfoView from '../views/PacientesInfoView.vue'
 import UsuariosView from '../views/UsuariosView.vue'
 import UsuarioInfoView from '../views/UsuarioInfoView.vue'
+import Forgot from '../components/Auth/Forgot.vue'
 
 const routes = [
   {
@@ -33,6 +35,12 @@ const routes = [
     path: '/atencion',
     name: 'atencion',
     component: AtencionView
+  },
+  {
+    path: '/atencion/:citaId',
+    name: 'atencion-cita',
+    component: AtencionInfoView,
+    props: true
   },
   {
     path: '/paciente',
@@ -62,6 +70,17 @@ const routes = [
     component: CitasView
   },
   {
+    path: '/atencion',
+    name: 'atencion',
+    component: AtencionView
+  },
+  {
+    path: "/cita/:citaId",
+    name: 'info-cita',
+    component: CitaInfoView,
+    props: true
+  },
+  {
     path: '/usuarios',
     name: 'usuarios',
     component: UsuariosView
@@ -70,6 +89,16 @@ const routes = [
     path: '/usuario',
     name: 'usuario',
     component: UsuarioInfoView
+  },
+  {
+    path: '/usuario/:usuarioId',
+    name: 'editar-usuario',
+    component: UsuarioInfoView,
+    props: true
+  },
+  {
+    path: '/forgot',
+    component: Forgot
   }
   
 ]

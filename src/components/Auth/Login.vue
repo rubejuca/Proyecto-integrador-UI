@@ -31,7 +31,11 @@
                                         <div class="pt-1 mb-4">
                                             <button class="btn btn-dark btn-lg btn-block" type="submit">Login</button>&nbsp;
                                             <button class="btn btn-dark btn-lg btn-block"
-                                                @click="changeForm">Registrar</button>
+                                                @click="changeForm('REGISTER')">Sign-in</button>
+                                        </div>
+                                        <div>
+                                            <a class="link-primary" @click="changeForm('FORGOT')">¿Olvidaste tu
+                                                contraseña?</a>
                                         </div>
                                     </form>
                                 </div>
@@ -51,7 +55,7 @@ import { doLogin } from '@/utils/firebase';
 export default {
 
     props: {
-        changeForm: Function,
+        changeForm: Function
     },
 
     name: "Login",

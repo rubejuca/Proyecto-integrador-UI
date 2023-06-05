@@ -21,7 +21,7 @@
                                 <td>{{ cita.medicoNombre }} </td>
                                 <td>{{ cita.estado }} </td>
                                 <td>
-                                    <a class="btn-sm btn-outline-success" href="citas.html" role="button">Editar</a>
+                                    <a class="btn-sm btn-outline-success" @click="editar(cita.id)" role="button">Editar</a>
                                 </td>
                             </tr>
                         </tbody>
@@ -35,11 +35,14 @@
 
 <script>
 
-import Menu from '../components/Menu';
+import Menu from '@/components/Menu.vue';
 
 export default {
 
     name: "Citas",
+    components: {
+        Menu
+    },
 
     data() {
         return {
@@ -47,14 +50,16 @@ export default {
         }
     },
 
-    components: {
-        Menu
-    },
 
     methods: {
         async leerCitas() {
             const citas = await fetch("http://localhost:8080/api/citas");
             this.citas = await citas.json();
+        },
+
+        async editar(citaId) {
+            console.log(`Editar ${citaId}`)
+            this.$router.push({ name: "info-cita", params: { citaId: citaId } })
         }
     },
 

@@ -7,6 +7,7 @@
             <div class="col py-3">
                 <div class="container">
                     <form class="row g-3">
+                        <h2>Registro de Médicos</h2>
                         <div class="col-md-3">
                             <label for="tipoDocumento" class="form-label">Tipo de documento</label>
                             <select id="tipoDocumento" class="form-select" v-model="tipoDocumento">
@@ -33,7 +34,6 @@
                             <label for="apellidos" class="form-label">Apellidos</label>
                             <input type="text" class="form-control" id="apellidos" v-model="apellidos">
                         </div>
-
                         <div class="col-8">
                             <label for="direccion" class="form-label">Direccion</label>
                             <input type="text" class="form-control" id="direccion" v-model="direccion">
@@ -41,6 +41,16 @@
                         <div class="col-4">
                             <label for="telefono" class="form-label">Telefono</label>
                             <input type="text" class="form-control" id="telefono" v-model="telefono">
+                        </div>
+                        <div class="col-md-3">
+                            <label for="especialidad" class="form-label">Especialidad</label>
+                            <select id="especialidad" class="form-select" v-model="especialidad">
+                                <option value="1">Medicina General</option>
+                                <option value="2">Psicólogia</option>
+                                <option value="3">Psiquiatría</option>
+                                <option value="4">Nutrición</option>
+                                <option value="5">Fisiterapia</option>
+                            </select>
                         </div>
                         <div class="col-12">
                             <button class="btn btn-primary" @click="guardar">Guardar</button>&nbsp;
@@ -70,6 +80,7 @@ export default {
 
     data() {
         return {
+            especialidad: "1",
             documento: null,
             tipoDocumento: "CC",
             nombres: null,
@@ -80,9 +91,12 @@ export default {
         };
     },
 
-    mounted() {
+    async mounted() {
+        console.log(this.$route.params.medicoId);
         if (this.$route.params.medicoId != undefined) {
-            this.leer(this.$route.params.medicoId);
+            const medico = await fetch(`http://localhost:8080/api/medicos/${this.$route.params.medicoId}`)
+                .then(response => response.json());
+            this.actualizarData(medico);
         }
     },
 
@@ -96,6 +110,7 @@ export default {
 
                     },
                     body: JSON.stringify({
+                        especialidad: this.especialidad,
                         documento: this.documento,
                         tipoDocumento: this.tipoDocumento,
                         nombres: this.nombres,
@@ -115,6 +130,7 @@ export default {
                     },
                     body: JSON.stringify({
                         id: this.id,
+                        especialidad: this.especialidad,
                         documento: this.documento,
                         tipoDocumento: this.tipoDocumento,
                         nombres: this.nombres,
@@ -130,13 +146,9 @@ export default {
             this.$router.push("/medicos");
         },
 
-        async leer(medicoId) {
-            const response = await fetch(`http://localhost:8080/api/medicos/${medicoId}`);
-            this.actualizarData(await response.json());
-        },
-
         actualizarData(datos) {
             this.id = datos.id
+            this.especialidad = datos.especialidad;
             this.tipoDocumento = datos.tipoDocumento;
             this.documento = datos.documento;
             this.email = datos.email;
