@@ -3,6 +3,8 @@
         <Login v-if="showLogin === 'LOGIN'" :changeForm="changeForm" />
         <Register v-if="showLogin === 'REGISTER'" :changeForm="changeForm" />
         <Forgot v-if="showLogin === 'FORGOT'" :changeForm="changeForm" />
+        <SeguimientoView v-if="showLogin === 'SEGUIMIENTO'" :changeForm="changeForm" />
+
     </div>
 </template>
 
@@ -12,6 +14,7 @@ import { ref } from 'vue';
 import Login from "../components/Auth/Login.vue";
 import Register from "../components/Auth/Register.vue";
 import Forgot from '@/components/Auth/Forgot.vue';
+import SeguimientoView from './SeguimientoView.vue';
 
 
 export default {
@@ -19,8 +22,8 @@ export default {
     components: {
         Login,
         Register,
-        Forgot
-
+        Forgot,
+        SeguimientoView
     },
     setup() {
         let showLogin = ref("LOGIN");

@@ -7,8 +7,8 @@
     <ul class="nav nav-pills flex-column mt-4 mt-sm-0" id="menu">
       <li class="nav-item my-sm-1 my-2">
         <a href="#" class="nav-link text-white text-center text-sm-start" aria-current="page">
-          <span class="ms-2 d-none d-sm-inline"><i class="bi bi-speedometer"></i>
-            Dashboard</span>
+          <router-link class="nav-link text-white" to="/"><i class="bi bi-person-lines-fill"></i>
+            Sobre nosotros</router-link>
         </a>
       </li>
       <template v-if="permisos && permisos.includes('MENU_MEDICOS')">

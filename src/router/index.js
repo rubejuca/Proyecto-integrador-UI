@@ -10,11 +10,14 @@ import PacientesInfoView from '../views/PacientesInfoView.vue'
 import UsuariosView from '../views/UsuariosView.vue'
 import UsuarioInfoView from '../views/UsuarioInfoView.vue'
 import Forgot from '../components/Auth/Forgot.vue'
+import AboutView from '../views/AboutView.vue'
+import SeguimientoView from '../views/SeguimientoView.vue'
 
 const routes = [
   {
     path: '/',
-    component: MedicosView
+    name: 'about',
+    component: AboutView
   },
   {
     path: '/medicos',
@@ -99,6 +102,10 @@ const routes = [
   {
     path: '/forgot',
     component: Forgot
+  },
+  {
+    path: '/seguimiento/:pacienteId',
+    component: SeguimientoView
   }
   
 ]
