@@ -14,6 +14,7 @@ import AboutView from '../views/AboutView.vue'
 import SeguimientoView from '../views/SeguimientoView.vue'
 
 const routes = [
+  
   {
     path: '/',
     name: 'about',
