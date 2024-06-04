@@ -43,7 +43,7 @@
 </template>
 
 <script>
-
+import Swal from 'sweetalert2'
 import Menu from '@/components/Menu.vue';
 
 export default {
@@ -70,32 +70,72 @@ export default {
     },
 
     async mounted() {
-        this.leerMedicos();
-        this.leerPacientes();
+    this.leerMedicos();
+    this.leerPacientes();
 
-        if (this.$route.params.citaId != undefined) {
-            const cita = await fetch(`http://localhost:8080/api/citas/${this.$route.params.citaId}`)
-                .then(response => response.json());
+    if (this.$route.params.citaId != undefined) {
+        try {
+            const response = await fetch(`http://localhost:8080/api/citas/${this.$route.params.citaId}`);
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message);
+            }
+            const cita = await response.json();
             this.actualizarData(cita);
+        } catch (error) {
+            console.error("Error fetching cita:", error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: `Hubo un problema al obtener los datos de la cita: ${error.message}`
+            });
+        }
+    }
+},
+
+methods: {
+    async leerMedicos() {
+        try {
+            const response = await fetch("http://localhost:8080/api/medicos");
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message);
+            }
+            this.medicos = await response.json();
+        } catch (error) {
+            console.error("Error fetching medicos:", error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: `Hubo un problema al obtener los datos de los médicos: ${error.message}`
+            });
         }
     },
 
+    async leerPacientes() {
+        try {
+            const response = await fetch("http://localhost:8080/api/pacientes");
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message);
+            }
+            this.pacientes = await response.json();
+        } catch (error) {
+            console.error("Error fetching pacientes:", error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: `Hubo un problema al obtener los datos de los pacientes: ${error.message}`
+            });
+        }
+    },
 
-    methods: {
-        async leerMedicos() {
-            const medicos = await fetch("http://localhost:8080/api/medicos");
-            this.medicos = await medicos.json();
-        },
-
-        async leerPacientes() {
-            const pacientes = await fetch("http://localhost:8080/api/pacientes");
-            this.pacientes = await pacientes.json();
-        },
-
-        async guardar() {
+    async guardar() {
+        try {
+            let response;
             if (this.id == undefined) {
                 console.log('Enviando al backend');
-                const response = await fetch("http://localhost:8080/api/citas", {
+                response = await fetch("http://localhost:8080/api/citas", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json"
@@ -107,10 +147,17 @@ export default {
                         motivo: this.motivo
                     }),
                 });
-                return response.json();
-
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.message);
+                }
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Registro exitoso',
+                    text: '¡La cita ha sido creada!'
+                });
             } else {
-                const response = await fetch(`http://localhost:8080/api/citas/${this.id}`, {
+                response = await fetch(`http://localhost:8080/api/citas/${this.id}`, {
                     method: 'PUT',
                     headers: {
                         "Content-Type": "application/json"
@@ -121,21 +168,37 @@ export default {
                         motivo: this.motivo
                     }),
                 });
-                this.actualizarData(await response.json());
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.message);
+                }
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Actualización exitosa',
+                    text: '¡Los datos de la cita han sido actualizados!'
+                });
             }
 
+            this.actualizarData(await response.json());
             this.$router.push("/citas");
-        },
-
-        actualizarData(datos) {
-            this.id = datos.id;
-            this.fechaHora = datos.fechaHora;
-            this.pacienteId = datos.pacienteId;
-            this.medicoId = datos.medicoId;
-            this.motivo = datos.motivo;
+        } catch (error) {
+            console.error("Error saving cita:", error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: `Hubo un problema al guardar los datos de la cita: ${error.message}`
+            });
         }
-
     },
+
+    actualizarData(datos) {
+        this.id = datos.id;
+        this.fechaHora = datos.fechaHora;
+        this.pacienteId = datos.pacienteId;
+        this.medicoId = datos.medicoId;
+        this.motivo = datos.motivo;
+    }
+},
 }
 </script>
 

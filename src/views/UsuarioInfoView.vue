@@ -32,6 +32,7 @@
 </template>
 
 <script>
+import Swal from 'sweetalert2'
 import Menu from '../components/Menu.vue'
 export default {
 
@@ -54,18 +55,33 @@ export default {
     },
 
     async mounted() {
-        console.log(this.$route.params.usuarioId);
-        if (this.$route.params.usuarioId != undefined) {
-            const usuario = await fetch(`http://localhost:8080/api/usuarios/${this.$route.params.usuarioId}`)
-                .then(response => response.json());
+    console.log(this.$route.params.usuarioId);
+    if (this.$route.params.usuarioId != undefined) {
+        try {
+            const response = await fetch(`http://localhost:8080/api/usuarios/${this.$route.params.usuarioId}`);
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message);
+            }
+            const usuario = await response.json();
             this.actualizarData(usuario);
+        } catch (error) {
+            console.error("Error fetching usuario:", error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: `Hubo un problema al obtener los datos del usuario: ${error.message}`
+            });
         }
-    },
+    }
+},
 
-    methods: {
-        async guardar() {
+methods: {
+    async guardar() {
+        try {
+            let response;
             if (this.id == undefined) {
-                const response = await fetch("http://localhost:8080/api/usuarios", {
+                response = await fetch("http://localhost:8080/api/usuarios", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json"
@@ -77,10 +93,17 @@ export default {
                         usuarios: this.usuarios
                     }),
                 });
-                this.actualizarData(await response.json());
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.message);
+                }
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Registro exitoso',
+                    text: '¡El usuario ha sido creado!'
+                });
             } else {
-
-                const response = await fetch(`http://localhost:8080/api/usuarios/${this.id}`, {
+                response = await fetch(`http://localhost:8080/api/usuarios/${this.id}`, {
                     method: 'PUT',
                     headers: {
                         "Content-Type": "application/json"
@@ -91,21 +114,35 @@ export default {
                         rol: this.rol
                     }),
                 });
-                this.actualizarData(await response.json());
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.message);
+                }
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Actualización exitosa',
+                    text: '¡Los datos del usuario han sido actualizados!'
+                });
             }
 
+            this.actualizarData(await response.json());
             this.$router.push("/usuarios");
-        },
-
-        actualizarData(datos) {
-            this.id = datos.id;
-            this.email = datos.email;
-            this.rol = datos.rol;
-
+        } catch (error) {
+            console.error("Error saving usuario:", error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: `Hubo un problema al guardar los datos del usuario: ${error.message}`
+            });
         }
-
     },
 
+    actualizarData(datos) {
+        this.id = datos.id;
+        this.email = datos.email;
+        this.rol = datos.rol;
+    }
+}
 }
 </script>
 

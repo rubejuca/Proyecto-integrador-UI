@@ -55,7 +55,7 @@
 </template>
 
 <script>
-
+import Swal from 'sweetalert2'
 import Menu from '@/components/Menu.vue';
 
 export default {
@@ -88,11 +88,12 @@ export default {
             this.leer(this.$route.params.pacienteId);
         }
     },
-
     methods: {
-        async guardar() {
+    async guardar() {
+        try {
+            let response;
             if (this.id == undefined) {
-                const response = await fetch("http://localhost:8080/api/pacientes", {
+                response = await fetch("http://localhost:8080/api/pacientes", {
                     method: 'POST',
                     headers: {
                         "Content-Type": "application/json"
@@ -107,10 +108,17 @@ export default {
                         telefono: this.telefono
                     }),
                 });
-                this.actualizarData(await response.json());
-
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.message);
+                }
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Registro exitoso',
+                    text: '¡El paciente ha sido creado!'
+                });
             } else {
-                const response = await fetch(`http://localhost:8080/api/pacientes/${this.id}`, {
+                response = await fetch(`http://localhost:8080/api/pacientes/${this.id}`, {
                     method: 'PUT',
                     headers: {
                         "Content-Type": "application/json"
@@ -126,28 +134,59 @@ export default {
                         telefono: this.telefono
                     }),
                 });
-                this.actualizarData(await response.json());
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.message);
+                }
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Actualización exitosa',
+                    text: '¡Los datos del paciente han sido actualizados!'
+                });
             }
 
-            this.$router.push("/pacientes");
-        },
-
-        async leer(pacienteId) {
-            const response = await fetch(`http://localhost:8080/api/pacientes/${pacienteId}`);
             this.actualizarData(await response.json());
-        },
-
-        actualizarData(datos) {
-            this.id = datos.id
-            this.tipoDocumento = datos.tipoDocumento;
-            this.documento = datos.documento;
-            this.email = datos.email;
-            this.nombres = datos.nombres;
-            this.apellidos = datos.apellidos;
-            this.direccion = datos.direccion;
-            this.telefono = datos.telefono;
+            this.$router.push("/pacientes");
+        } catch (error) {
+            console.error("Error saving paciente:", error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: `Hubo un problema al guardar los datos del paciente: ${error.message}`
+            });
         }
+    },
+
+    async leer(pacienteId) {
+        try {
+            const response = await fetch(`http://localhost:8080/api/pacientes/${pacienteId}`);
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message);
+            }
+            this.actualizarData(await response.json());
+        } catch (error) {
+            console.error("Error fetching paciente:", error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: `Hubo un problema al obtener los datos del paciente: ${error.message}`
+            });
+        }
+    },
+
+    actualizarData(datos) {
+        this.id = datos.id;
+        this.tipoDocumento = datos.tipoDocumento;
+        this.documento = datos.documento;
+        this.email = datos.email;
+        this.nombres = datos.nombres;
+        this.apellidos = datos.apellidos;
+        this.direccion = datos.direccion;
+        this.telefono = datos.telefono;
     }
+}
+
 }
 </script>
 

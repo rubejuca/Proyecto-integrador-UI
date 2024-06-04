@@ -39,7 +39,7 @@
 </template>
 
 <script>
-
+import Swal from 'sweetalert2'
 import Menu from '@/components/Menu.vue';
 export default {
 
@@ -64,23 +64,34 @@ export default {
     },
 
     async mounted() {
-
-        if (this.$route.params.citaId != undefined) {
-            const cita = await fetch(`http://localhost:8080/api/citas/${this.$route.params.citaId}`)
-                .then(response => response.json());
-
+    if (this.$route.params.citaId != undefined) {
+        try {
+            const response = await fetch(`http://localhost:8080/api/citas/${this.$route.params.citaId}`);
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message);
+            }
+            const cita = await response.json();
             this.id = cita.id;
             this.fechaHora = cita.fechaHora;
             this.medicoNombre = cita.medicoNombre;
             this.pacienteNombre = cita.pacienteNombre;
             this.motivo = cita.motivo;
             this.diagnostico = cita.diagnostico;
+        } catch (error) {
+            console.error("Error fetching cita:", error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: `Hubo un problema al obtener los datos de la cita: ${error.message}`
+            });
         }
+    }
+},
 
-    },
-
-    methods: {
-        async guardar() {
+methods: {
+    async guardar() {
+        try {
             const response = await fetch(`http://localhost:8080/api/citas/${this.id}/atender`, {
                 method: 'PUT',
                 headers: {
@@ -90,11 +101,39 @@ export default {
                     diagnostico: this.diagnostico
                 }),
             });
-            this.actualizarData(await response.json());
-            this.$router.push("/atencion");
-        },
-    }
 
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message);
+            }
+
+            this.actualizarData(await response.json());
+            Swal.fire({
+                icon: 'success',
+                title: 'Actualización exitosa',
+                text: '¡La cita ha sido atendida exitosamente!'
+            });
+
+            this.$router.push("/atencion");
+        } catch (error) {
+            console.error("Error updating cita:", error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: `Hubo un problema al atender la cita: ${error.message}`
+            });
+        }
+    },
+
+    actualizarData(datos) {
+        this.id = datos.id;
+        this.fechaHora = datos.fechaHora;
+        this.medicoNombre = datos.medicoNombre;
+        this.pacienteNombre = datos.pacienteNombre;
+        this.motivo = datos.motivo;
+        this.diagnostico = datos.diagnostico;
+    }
+}
 }
 </script>
 

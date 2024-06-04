@@ -64,6 +64,7 @@
 </template>
 
 <script>
+import Swal from 'sweetalert2'
 
 import Menu from '@/components/Menu.vue';
 
@@ -92,22 +93,36 @@ export default {
     },
 
     async mounted() {
-        console.log(this.$route.params.medicoId);
-        if (this.$route.params.medicoId != undefined) {
-            const medico = await fetch(`http://localhost:8080/api/medicos/${this.$route.params.medicoId}`)
-                .then(response => response.json());
+    console.log(this.$route.params.medicoId);
+    if (this.$route.params.medicoId != undefined) {
+        try {
+            const response = await fetch(`http://localhost:8080/api/medicos/${this.$route.params.medicoId}`);
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message);
+            }
+            const medico = await response.json();
             this.actualizarData(medico);
+        } catch (error) {
+            console.error("Error fetching medico:", error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: `Hubo un problema al obtener los datos del médico: ${error.message}`
+            });
         }
-    },
+    }
+},
 
-    methods: {
-        async guardar() {
+methods: {
+    async guardar() {
+        try {
+            let response;
             if (this.id == undefined) {
-                const response = await fetch("http://localhost:8080/api/medicos", {
+                response = await fetch("http://localhost:8080/api/medicos", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json"
-
                     },
                     body: JSON.stringify({
                         especialidad: this.especialidad,
@@ -120,10 +135,17 @@ export default {
                         direccion: this.direccion
                     }),
                 });
-                this.actualizarData(await response.json());
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.message);
+                }
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Registro exitoso',
+                    text: '¡Tu médico ha sido creado!'
+                });
             } else {
-
-                const response = await fetch(`http://localhost:8080/api/medicos/${this.id}`, {
+                response = await fetch(`http://localhost:8080/api/medicos/${this.id}`, {
                     method: 'PUT',
                     headers: {
                         "Content-Type": "application/json"
@@ -140,24 +162,42 @@ export default {
                         direccion: this.direccion
                     }),
                 });
-                this.actualizarData(await response.json());
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.message);
+                }
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Actualización exitosa',
+                    text: '¡Los datos del médico han sido actualizados!'
+                });
             }
 
+            this.actualizarData(await response.json());
             this.$router.push("/medicos");
-        },
-
-        actualizarData(datos) {
-            this.id = datos.id
-            this.especialidad = datos.especialidad;
-            this.tipoDocumento = datos.tipoDocumento;
-            this.documento = datos.documento;
-            this.email = datos.email;
-            this.nombres = datos.nombres;
-            this.apellidos = datos.apellidos;
-            this.direccion = datos.direccion;
-            this.telefono = datos.telefono;
+        } catch (error) {
+            console.error("Error saving medico:", error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: `Hubo un problema al guardar los datos del médico: ${error.message}`
+            });
         }
+    },
+
+    actualizarData(datos) {
+        this.id = datos.id;
+        this.especialidad = datos.especialidad;
+        this.tipoDocumento = datos.tipoDocumento;
+        this.documento = datos.documento;
+        this.email = datos.email;
+        this.nombres = datos.nombres;
+        this.apellidos = datos.apellidos;
+        this.direccion = datos.direccion;
+        this.telefono = datos.telefono;
     }
+}
+
 
 }
 
